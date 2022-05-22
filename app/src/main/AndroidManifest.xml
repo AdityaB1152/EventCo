@@ -10,13 +10,8 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.EventCo">
         <activity
-            android:name=".Organiser.NewEventActivity"
-            android:exported="false"
-            android:label="@string/title_activity_new_event"
-            android:theme="@style/Theme.EventCo.NoActionBar" />
-        <activity
-            android:name=".Organiser.OrganiserMainActivity"
-            android:exported="true">
+            android:name=".SignUpActivity"
+            android:exported="true" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -24,19 +19,23 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".Attendee.MainAttendeeActivity"
+            android:name=".Organiser.NewEventActivity"
+            android:exported="false"
+            android:label="@string/title_activity_new_event"
+            android:theme="@style/Theme.EventCo.NoActionBar" />
+        <activity
+            android:name=".Organiser.OrganiserMainActivity"
             android:exported="false">
-
         </activity>
         <activity
+            android:name=".Attendee.MainAttendeeActivity"
+            android:exported="false"></activity>
+        <activity
             android:name=".LoginActivity"
-            android:exported="false">
-
-        </activity>
+            android:exported="false"></activity>
         <activity
             android:name=".MainActivity"
             android:exported="false" />
-
         <meta-data
             android:name="preloaded_fonts"
             android:resource="@array/preloaded_fonts" />

@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "62717442999",
+    "project_id": "eventco-56a78",
+    "storage_bucket": "eventco-56a78.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:62717442999:android:b4d97e8effacab94220632",
+        "android_client_info": {
+          "package_name": "com.example.eventco"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "62717442999-ppijsm88t19s8dcjfcgck4bj0bbdk0eu.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAzzZCRxPCbEui2rDu3FujMiHvo-SlHEGw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "62717442999-ppijsm88t19s8dcjfcgck4bj0bbdk0eu.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

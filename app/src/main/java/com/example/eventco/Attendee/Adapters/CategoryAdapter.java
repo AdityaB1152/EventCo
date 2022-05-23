@@ -26,9 +26,7 @@ import java.util.ArrayList;
 public class CategoryAdapter extends RecyclerView.Adapter<CategoryViewHolder> {
     private Context context;
     private ArrayList<Category> categories;
-    RecyclerView eventsRv;
-    EventAdapter adapter;
-    ArrayList<Event> events;
+
     FirebaseFirestore firestore;
 
     public CategoryAdapter(Context context , ArrayList<Category> categories){
@@ -46,6 +44,9 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryViewHolder> {
     @Override
     public void onBindViewHolder(@NonNull CategoryViewHolder holder, int position) {
         Category category = categories.get(position);
+        RecyclerView eventsRv;
+        EventAdapter adapter;
+        ArrayList<Event> events;
         events = new ArrayList<>();
         adapter = new EventAdapter(context,events);
         eventsRv = holder.binding.eventRV;

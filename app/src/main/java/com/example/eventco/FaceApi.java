@@ -6,6 +6,8 @@ import android.content.Intent;
 import android.util.Log;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+
 import com.android.volley.AuthFailureError;
 import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
@@ -19,7 +21,10 @@ import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -59,7 +64,7 @@ public class FaceApi {
             e.printStackTrace();
         }
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.PUT,
-                endpoint + "/face/v1.0/persongroups/" + eventId,
+                endpoint + "/face/v1.0/persongroups/"+eventId+"f",
                 jsonObject, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
@@ -82,6 +87,7 @@ public class FaceApi {
         queue.add(request);
     }
     public void addPerson(Context context , String name,String eventId,String uid,String downloadUrl){
+
         String url = endpoint+"/face/v1.0/persongroups/"+eventId+"/persons";
         RequestQueue queue = Volley.newRequestQueue(context);
 
@@ -143,7 +149,7 @@ public class FaceApi {
             @Override
             public void onResponse(JSONObject response) {
                 Log.e("CHECK",response.toString());
-                JSONObject object = new JSONObject();
+                Map<String,String> object = new HashMap<>();
 
                 try {
                     String pId = response.getString("persistedFaceId");
@@ -151,25 +157,38 @@ public class FaceApi {
                     object.put("pId",pId);
                     object.put("status","registered");
                     object.put("imageUrl",downloadUrl);
+                    Toast.makeText(context, pId, Toast.LENGTH_SHORT).show();
                     firestore.collection("Events/"+eventId+"/registeredUsers/")
-                            .document(uid).set(object).addOnSuccessListener(new OnSuccessListener<Void>() {
+                            .document(uid).set(object).addOnCompleteListener(new OnCompleteListener<Void>() {
                         @Override
-                        public void onSuccess(Void unused) {
+                        public void onComplete(@NonNull Task<Void> task) {
                             JSONObject object1 = new JSONObject();
                             try {
-                                object1.put("eventId",eventId);
-                                object1.put("date",new Date());
+                                object1.put("eventId", eventId);
+                                object1.put("date", new Date());
                             } catch (JSONException e) {
                                 e.printStackTrace();
                             }
 
-                            Log.e("CHECK","User Registed Successfully");
-                            firestore.collection("Users/"+uid+"/bookings").document(eventId)
-                                    .set(object1);
-                        }
-                    });
+                            Log.e("CHECK", "User Registed Successfully");
+                            firestore.collection("Users/" + uid + "/bookings").document(eventId)
+                                    .set(object1).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                @Override
+                                public void onSuccess(Void unused) {
+                                    Log.e("CHECK", "DONE");
+                                }
+                            }).addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception e) {
+                                    Log.e("FAIL", e.toString());
+                                }
+                            });
 
-                } catch (JSONException e) {
+
+                        }
+
+                });
+                }catch (JSONException e) {
                     e.printStackTrace();
                 }
                 queueTraining(context , eventId);

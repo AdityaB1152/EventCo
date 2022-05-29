@@ -15,16 +15,17 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.eventco.Attendee.Models.Event;
+import com.example.eventco.LoginActivity;
 import com.example.eventco.Organiser.Adapters.EventDetailsAdapter;
-import com.example.eventco.Organiser.NewEventActivity;
-import com.example.eventco.databinding.FragmentOngoingBinding;
+import com.example.eventco.R;
+import com.example.eventco.Security.SecurityMainActivity;
+import com.example.eventco.databinding.FragmentPreviousBinding;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
@@ -33,21 +34,22 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
-import java.util.Map;
 
+public class PreviousFragment extends Fragment {
 
-public class OngoingFragment extends Fragment {
-    FragmentOngoingBinding binding;
-   FirebaseFirestore firestore;
+    FragmentPreviousBinding binding;
+    FirebaseFirestore firestore;
     RecyclerView ongoingEventsRV;
-     FloatingActionButton createEventButton;
+    FloatingActionButton createEventButton;
     ArrayList<Event> events;
-     EventDetailsAdapter adapter;
-     FirebaseAuth auth;
+    EventDetailsAdapter adapter;
+    FirebaseAuth auth;
 
-    public OngoingFragment() {
+    public PreviousFragment() {
         // Required empty public constructor
     }
+
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -58,27 +60,37 @@ public class OngoingFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        binding = FragmentOngoingBinding.inflate(inflater , container ,false);
+       binding = FragmentPreviousBinding.inflate(inflater,container,false);
+
         ongoingEventsRV = binding.ongoingRv;
         auth = FirebaseAuth.getInstance();
-        createEventButton = binding.createEventButton;
         events = new ArrayList<>();
         adapter = new EventDetailsAdapter(getActivity() , events);
         ongoingEventsRV.setLayoutManager(new LinearLayoutManager(getActivity()));
         ongoingEventsRV.setAdapter(adapter);
         firestore = FirebaseFirestore.getInstance();
 
+        binding.logout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                FirebaseAuth.getInstance().signOut();
+                Intent intent = new Intent(getActivity(), LoginActivity.class);
+                startActivity(intent);
+
+            }
+        });
+
         CollectionReference eventsRef = firestore.collection("Events");
-        Query query = eventsRef.whereEqualTo("organiserId",auth.getUid()).whereEqualTo("status","ongoing");
+        Query query = eventsRef.whereEqualTo("organiserId",auth.getUid()).whereEqualTo("status","completed");
 //        query.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
 //            @Override
 //            public void onComplete(@NonNull Task<QuerySnapshot> task) {
 //                if(task.isSuccessful()){
 //                    for(QueryDocumentSnapshot documentSnapshot : task.getResult()){
-//                      Event event = documentSnapshot.toObject(Event.class);
-//                      Snackbar.make(getView(),event.getTitle(),Snackbar.LENGTH_LONG).show();
-//                      events.add(event);
-//                      Log.e("CHECK",event.toString());
+//                        Event event = documentSnapshot.toObject(Event.class);
+//                        Snackbar.make(getView(),event.getTitle(),Snackbar.LENGTH_LONG).show();
+//                        events.add(event);
+//                        Log.e("CHECK",event.toString());
 //                    }
 //                    adapter.notifyDataSetChanged();
 //                }
@@ -103,22 +115,10 @@ public class OngoingFragment extends Fragment {
                         }
                     }
                 });
-
                 adapter.notifyDataSetChanged();
             }
         });
-
-
-
-
-        createEventButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(getActivity() , NewEventActivity.class);
-                startActivity(intent);
-            }
-        });
-
         return binding.getRoot();
+
     }
 }

@@ -4,7 +4,7 @@ import java.util.Date;
 
 public class Event {
     private String eventId ,title ,category, bannerUrl , venue , desc , organiserId , status;
-    private Date date;
+    private String date;
 
     public Event(){
 
@@ -35,7 +35,7 @@ public class Event {
         this.venue = venue;
     }
 
-    public Event(String eventId, String title, String category, String bannerUrl, String venue, String desc, Date date, String organiserId,String status){
+    public Event(String eventId, String title, String category, String bannerUrl, String venue, String desc, String date, String organiserId,String status){
         this.category = category;
         this.bannerUrl = bannerUrl;
         this.title = title;
@@ -47,11 +47,11 @@ public class Event {
         this.status = status;
     }
 
-    public Date getDate() {
+    public String getDate() {
         return date;
     }
 
-    public void setDate(Date date) {
+    public void setDate(String date) {
         this.date = date;
     }
 

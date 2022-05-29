@@ -66,6 +66,7 @@ public class NewEventActivity extends AppCompatActivity {
         pDialog.setCancelable(false);
         pDialog.setMessage("Please Wait");
         newDesc = findViewById(R.id.new_description);
+        newTime = findViewById(R.id.new_date);
         date = new Date();
         createEvent = findViewById(R.id.create_new_event);
         firestore = FirebaseFirestore.getInstance();
@@ -93,7 +94,7 @@ public class NewEventActivity extends AppCompatActivity {
                 title = newTitle.getText().toString();
                 venue = newVenue.getText().toString();
                 desc = newDesc.getText().toString();
-
+                String date = newTime.getText().toString();
                 if(selectedImage!=null){
                     pDialog.show();
                     StorageReference reference = storage.getReference().child("Event Banners").child(new Date().getTime()+"");
@@ -104,7 +105,7 @@ public class NewEventActivity extends AppCompatActivity {
                                 @Override
                                 public void onSuccess(Uri uri) {
                                     String downloadUrl = uri.toString();
-                                    String eventId = auth.getUid()+date.getTime();
+                                    String eventId = new Date().getTime()+"";
                                     Event event = new Event(eventId,title , category, downloadUrl,venue,desc,date, auth.getUid(),"ongoing");
                                     FaceApi api = new FaceApi();
                                     api.createPersonGroup(NewEventActivity.this,title,eventId);

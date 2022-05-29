@@ -1,9 +1,15 @@
 package com.example.eventco.Attendee;
 
+import android.Manifest;
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.TextureView;
 import android.view.View;
 import android.widget.ProgressBar;
@@ -17,6 +23,7 @@ import androidx.camera.core.ImageCaptureException;
 import androidx.camera.core.Preview;
 import androidx.camera.lifecycle.ProcessCameraProvider;
 import androidx.camera.view.PreviewView;
+import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.lifecycle.LifecycleOwner;
 
@@ -52,63 +59,126 @@ public class RegisterActivity extends AppCompatActivity {
     ListenableFuture<ProcessCameraProvider> cameraProviderFuture;
     ImageCapture imageCapture;
     ProgressDialog progressDialog;
-    String eventId = getIntent().getStringExtra("eventId");
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = ActivityRegisterBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+        {
+            String eventId = getIntent().getStringExtra("eventId");
+            Intent intent = getIntent();
+            layout = binding.coordinator;
+            auth = FirebaseAuth.getInstance();
+            progressDialog = new ProgressDialog(this);
+            progressDialog.setCancelable(false);
+            progressDialog.setMessage("Please Wait!");
+            layout.setTitle(intent.getStringExtra("title"));
+            firestore = FirebaseFirestore.getInstance();
+            binding.title.setText(intent.getStringExtra("title"));
+            String downloadUrl = intent.getStringExtra("bannerUrl");
+            Glide.with(RegisterActivity.this).load(downloadUrl).into(binding.registerBanner);
+            binding.registerAbout.setText(intent.getStringExtra("desc"));
+            previewView = binding.preview;
 
-        Intent intent = getIntent();
-        layout = binding.coordinator;
-        auth = FirebaseAuth.getInstance();
-        progressDialog = new ProgressDialog(this);
-        progressDialog.setCancelable(false);
-        progressDialog.setMessage("Please Wait!");
-        layout.setTitle(intent.getStringExtra("title"));
-        firestore = FirebaseFirestore.getInstance();
-        binding.title.setText(intent.getStringExtra("title"));
-        String downloadUrl = intent.getStringExtra("bannerUrl");
-        Glide.with(RegisterActivity.this).load(downloadUrl).into(binding.registerBanner);
-        binding.registerAbout.setText(intent.getStringExtra("desc"));
-        previewView = binding.preview;
-
-        cameraProviderFuture = ProcessCameraProvider.getInstance(this);
-        cameraProviderFuture.addListener(()->{
-            try {
-                ProcessCameraProvider cameraProvider = cameraProviderFuture.get();
-                startCameraX(cameraProvider);
-            } catch (ExecutionException e) {
-                e.printStackTrace();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        },getExecutor());
-
-        binding.book.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                binding.coordinator1.setVisibility(View.GONE);
-                binding.book.setVisibility(View.GONE);
-                binding.preview.setVisibility(View.VISIBLE);
-                binding.capture.setVisibility(View.VISIBLE);
-            }
-        });
-
-
-        binding.capture.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+            cameraProviderFuture = ProcessCameraProvider.getInstance(this);
+            cameraProviderFuture.addListener(() -> {
                 try {
-                    capture();
-                } catch (IOException e) {
+                    ProcessCameraProvider cameraProvider = cameraProviderFuture.get();
+                    startCameraX(cameraProvider);
+                } catch (ExecutionException e) {
+                    e.printStackTrace();
+                } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
-            }
-        });
+            }, getExecutor());
+
+            binding.book.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if(checkPermission()){
+                        binding.coordinator1.setVisibility(View.GONE);
+                        binding.book.setVisibility(View.GONE);
+                        binding.preview.setVisibility(View.VISIBLE);
+                        binding.capture.setVisibility(View.VISIBLE);
+                    }
+                    else {
+                        requestPermission();
+                    }
+
+                }
+            });
 
 
+            binding.capture.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    try {
+                        capture(eventId);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            });
+        }
+
+
+    }
+
+    private boolean checkPermission() {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA)
+                != PackageManager.PERMISSION_GRANTED) {
+            // Permission is not granted
+            return false;
+        }
+        return true;
+    }
+
+    private void requestPermission() {
+
+        ActivityCompat.requestPermissions(this,
+                new String[]{Manifest.permission.CAMERA},
+                25);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        switch (requestCode) {
+            case 25:
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    Toast.makeText(getApplicationContext(), "Permission Granted", Toast.LENGTH_SHORT).show();
+
+                    // main logic
+                } else {
+                    Toast.makeText(getApplicationContext(), "Permission Denied", Toast.LENGTH_SHORT).show();
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                        if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA)
+                                != PackageManager.PERMISSION_GRANTED) {
+                            showMessageOKCancel("You need to allow access permissions",
+                                    new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                                                requestPermission();
+                                            }
+                                        }
+                                    });
+                        }
+                    }
+                }
+                break;
+        }
+    }
+
+    private void showMessageOKCancel(String message, DialogInterface.OnClickListener okListener) {
+        new AlertDialog.Builder(RegisterActivity.this)
+                .setMessage(message)
+                .setPositiveButton("OK", okListener)
+                .setNegativeButton("Cancel", null)
+                .create()
+                .show();
     }
 
     private Executor getExecutor() {
@@ -130,7 +200,7 @@ public class RegisterActivity extends AppCompatActivity {
         cameraProvider.bindToLifecycle((LifecycleOwner) this,selector,preview,imageCapture);
     }
 
-    public void capture() throws IOException {
+    public void capture(String eventId) throws IOException {
         binding.preview.setVisibility(View.GONE);
         binding.capture.setVisibility(View.GONE);
         progressDialog.show();
@@ -142,9 +212,7 @@ public class RegisterActivity extends AppCompatActivity {
                 new ImageCapture.OnImageSavedCallback() {
                     @Override
                     public void onImageSaved(@NonNull ImageCapture.OutputFileResults outputFileResults) {
-                        progressDialog.dismiss();
-                        binding.verifiedAnimation.setVisibility(View.VISIBLE);
-                        binding.textV.setVisibility(View.VISIBLE);
+
                             Uri uri = Uri.fromFile(outputFile);
                         StorageReference reference = FirebaseStorage.getInstance().getReference("Faces/"+eventId+"/"+ auth.getUid());
                                                 reference.putFile(uri)
@@ -159,9 +227,13 @@ public class RegisterActivity extends AppCompatActivity {
                                                 @Override
                                                 public void onSuccess(Uri uri) {
                                                     String url = uri.toString();
+                                                    Log.e("CHECK","CALLING API");
                                                     FaceApi api =new FaceApi();
                                                     api.addPerson(RegisterActivity.this,auth.getUid(),eventId
                                                             ,auth.getUid(),url);
+                                                    progressDialog.dismiss();
+                                                    binding.verifiedAnimation.setVisibility(View.VISIBLE);
+                                                    binding.textV.setVisibility(View.VISIBLE);
                                                 }
                                             });
                                         }

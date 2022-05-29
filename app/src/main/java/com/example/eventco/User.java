@@ -1,14 +1,15 @@
 package com.example.eventco;
 
 public class User {
-    private String name,uid;
+    private String name,uid,password;
 
     public User() {
 
     }
-    public User(String name , String email , String role, String uid) {
+    public User(String name , String email ,String password, String role, String uid) {
     this.name = name;
     this.email = email;
+    this.password = password;
     this.role = role;
         this.uid = uid;
     }

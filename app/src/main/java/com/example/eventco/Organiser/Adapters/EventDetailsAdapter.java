@@ -51,6 +51,11 @@ public class EventDetailsAdapter extends RecyclerView.Adapter<EventDetailsAdapte
         holder.binding.ongoingTitle.setText(event.getTitle());
         holder.binding.ongoingVenue.setText(event.getVenue());
 
+        if(event.getStatus()=="completed"){
+            holder.binding.endEvent.setText("Resume Event");
+
+        }
+
         holder.binding.foldingCell.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -74,12 +79,19 @@ public class EventDetailsAdapter extends RecyclerView.Adapter<EventDetailsAdapte
         holder.binding.endEvent.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                String newStatus = "";
+                if(event.getStatus() == "ongoing"){
+                    newStatus = "completed";
+                }
+                else {
+                    newStatus = "ongoing";
+                }
                 firestore.collection("Events").document(event.getEventId())
-                        .update("status","completed").addOnSuccessListener(
+                        .update("status",newStatus).addOnSuccessListener(
                         new OnSuccessListener<Void>() {
                             @Override
                             public void onSuccess(Void unused) {
-                                Toast.makeText(context, "Event Ended", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(context, "Event Status Changed", Toast.LENGTH_SHORT).show();
                             }
                         }
                 ).addOnFailureListener(new OnFailureListener() {

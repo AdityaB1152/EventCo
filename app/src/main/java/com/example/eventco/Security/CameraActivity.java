@@ -28,6 +28,7 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.eventco.Attendee.RegisterActivity;
 import com.example.eventco.FaceApi;
+import com.example.eventco.RegisteredUser;
 import com.example.eventco.databinding.ActivityCameraBinding;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -60,6 +61,8 @@ public class CameraActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+
         String eventId = getIntent().getStringExtra("eventId");
         binding = ActivityCameraBinding.inflate(getLayoutInflater());
         super.onCreate(savedInstanceState);
@@ -132,7 +135,7 @@ public class CameraActivity extends AppCompatActivity {
     public void capture(String eventId) throws IOException {
         binding.preview.setVisibility(View.GONE);
         binding.capture.setVisibility(View.GONE);
-
+        binding.card1.setVisibility(View.GONE);
         File outputDir = this.getCacheDir();
         File outputFile = File.createTempFile("temp",".jpeg",outputDir);
         imageCapture.takePicture(
@@ -177,6 +180,7 @@ public class CameraActivity extends AppCompatActivity {
                                                                     progressDialog.dismiss();
                                                                     binding.verifiedAnimation.setVisibility(View.VISIBLE);
                                                                     binding.textV.setVisibility(View.VISIBLE);
+                                                                    binding.back.setVisibility(View.VISIBLE);
                                                                 }
                                                                 else{
 

@@ -68,10 +68,10 @@ public class SignUpActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-                name = binding.newName.getText().toString();
-                email = binding.newEmail.getText().toString();
-                password = binding.newPassword.getText().toString();
-
+               String name = binding.newName.getText().toString();
+                String email = binding.newEmail.getText().toString();
+                String password = binding.newPassword.getText().toString();
+                Log.e("PASSWORD",password);
                 if(name.isEmpty()){
                     binding.newName.setError("Please Enter Name");
                 }
@@ -90,7 +90,7 @@ public class SignUpActivity extends AppCompatActivity {
                                 public void onComplete(@NonNull Task<AuthResult> task) {
                                     if(task.isSuccessful()){
                                         FirebaseUser user = mAuth.getCurrentUser();
-                                        User user1 = new User(name,email,role,user.getUid());
+                                        User user1 = new User(name,email,password,role,user.getUid());
                                         firestore.collection("Users").document(user.getUid()).set(user1);
                                         Intent intent ;
 

@@ -7,31 +7,33 @@
     tools:context=".Security.CameraActivity"
     android:background="@color/bgColor">
     <androidx.cardview.widget.CardView
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
         app:cardCornerRadius="70dp"
+        android:layout_marginLeft="70dp"
+        android:layout_marginRight="70dp"
         android:background="@color/green"
-        android:backgroundTint="@color/green">
+        android:backgroundTint="@color/green"
+        android:id="@+id/card1">
 
 
         <androidx.cardview.widget.CardView
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
             android:layout_centerVertical="true"
             android:layout_margin="2dp"
             app:cardCornerRadius="70dp"
-            android:visibility="gone"
+            android:visibility="visible"
             >
 
             <androidx.camera.view.PreviewView
                 android:id="@+id/preview"
                 android:layout_width="match_parent"
                 android:layout_height="250dp"
-
                 android:layout_centerInParent="true"
-                android:visibility="gone" />
+                android:visibility="visible" />
 
         </androidx.cardview.widget.CardView>
     </androidx.cardview.widget.CardView>
@@ -47,7 +49,7 @@
         android:layout_marginBottom="10dp"
         android:background="@drawable/rounded_buttons"
         android:text="Verify Face"
-        android:visibility="gone" />
+        android:visibility="visible" />
 
     <Button
         android:id="@+id/back"
@@ -59,7 +61,7 @@
         android:layout_marginBottom="10dp"
         android:background="@drawable/rounded_buttons"
         android:text="Scan Again"
-        android:visibility="visible" />
+        android:visibility="gone" />
 
     <ImageView
         android:id="@+id/backButton"
@@ -79,7 +81,7 @@
         app:lottie_loop="true"
         android:layout_centerInParent="true"
         android:id="@+id/verified_animation"
-        android:visibility="visible"
+        android:visibility="gone"
         />
 
     <TextView

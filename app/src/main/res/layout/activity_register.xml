@@ -14,7 +14,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/bgColor"
-        android:visibility="gone">
+        android:visibility="visible">
 
         <com.google.android.material.appbar.AppBarLayout
             android:id="@+id/appBarLayout"
@@ -165,7 +165,7 @@
         android:layout_marginBottom="10dp"
         android:background="@drawable/rounded_buttons"
         android:text="Book Now"
-        android:visibility="gone" />
+        android:visibility="visible" />
 
     <androidx.cardview.widget.CardView
         android:layout_width="250dp"
@@ -180,7 +180,7 @@
             android:layout_width="match_parent"
             android:layout_height="250dp"
             android:layout_centerInParent="true"
-            android:visibility="visible"
+            android:visibility="gone"
              />
 
     </androidx.cardview.widget.CardView>
@@ -196,7 +196,7 @@
         android:layout_marginBottom="10dp"
         android:background="@drawable/rounded_buttons"
         android:text="Verify Face"
-        android:visibility="visible" />
+        android:visibility="gone" />
 
     <ImageView
         android:id="@+id/backButton"
@@ -205,8 +205,8 @@
         android:layout_marginLeft="10dp"
         android:layout_marginTop="10dp"
         android:src="@drawable/back"
-        app:tint="@color/green"
-        android:visibility="visible"/>
+        android:visibility="visible"
+        app:tint="@color/green" />
 
     <com.airbnb.lottie.LottieAnimationView
         android:layout_width="wrap_content"

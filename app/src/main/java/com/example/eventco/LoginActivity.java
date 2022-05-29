@@ -8,9 +8,11 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.Toast;
 
 import com.example.eventco.Attendee.MainAttendeeActivity;
 import com.example.eventco.Organiser.OrganiserMainActivity;
+import com.example.eventco.Security.SecurityMainActivity;
 import com.example.eventco.databinding.ActivityLogin2Binding;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -24,8 +26,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 
 public class LoginActivity extends AppCompatActivity {
     private ActivityLogin2Binding binding ;
-    private String email;
-    private  String password;
+
     private FirebaseFirestore firestore;
     private FirebaseAuth mAuth;
     private ProgressDialog pDialog;
@@ -44,8 +45,8 @@ public class LoginActivity extends AppCompatActivity {
         binding.login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                email = binding.email.getText().toString();
-                password = binding.email.getText().toString();
+                String email = binding.email.getText().toString();
+                String password = binding.password.getText().toString();
 
                 if(email.isEmpty()){
                     binding.email.setError("Please enter an valid email address");
@@ -66,7 +67,7 @@ public class LoginActivity extends AppCompatActivity {
                                     if(task.isSuccessful()){
                                         Intent intent;
                                         DocumentSnapshot doc = task.getResult();
-                                        String userType = doc.get("userType").toString();
+                                        String userType = doc.getString("role");
                                         pDialog.dismiss();
                                         if(userType == "user"){
                                             intent = new Intent(LoginActivity.this , MainAttendeeActivity.class);
@@ -119,5 +120,53 @@ public class LoginActivity extends AppCompatActivity {
                 finish();
             }
         });
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        mAuth = FirebaseAuth.getInstance();
+        if(mAuth.getCurrentUser()!=null){
+            DocumentReference userDocRef = firestore.collection("Users").document(mAuth.getUid().toString());
+            userDocRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                @Override
+                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                    if(task.isSuccessful()){
+
+                        DocumentSnapshot doc = task.getResult();
+                        String userType = doc.getString("role");
+                        Log.e("CHECK",userType);
+                        pDialog.dismiss();
+                        if(userType.equals("user")){
+                            Intent intent = new Intent(LoginActivity.this , MainAttendeeActivity.class);
+                            startActivity(intent);
+                            finishAffinity();
+
+                        }
+                        else if(userType.equals("organiser")){
+                            Intent intent = new Intent(LoginActivity.this , OrganiserMainActivity.class);
+                            startActivity(intent);
+                            finishAffinity();
+
+                        }
+                        else if(userType.equals("security")){
+                            Intent intent = new Intent(LoginActivity.this , SecurityMainActivity.class);
+                            startActivity(intent);
+                            finishAffinity();
+
+                        }
+
+                    }
+                }
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    pDialog.dismiss();
+                    Log.e("Failure",e.toString());
+                    Toast.makeText(LoginActivity.this, e.toString(), Toast.LENGTH_LONG).show();
+
+                }
+            });
+        }
     }
 }

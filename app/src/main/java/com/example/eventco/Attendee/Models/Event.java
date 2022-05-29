@@ -3,7 +3,7 @@ package com.example.eventco.Attendee.Models;
 import java.util.Date;
 
 public class Event {
-    private String title , bannerUrl , venue , desc ;
+    private String eventId ,title ,category, bannerUrl , venue , desc , organiserId , status;
     private Date date;
 
     public Event(){
@@ -35,12 +35,16 @@ public class Event {
         this.venue = venue;
     }
 
-    public Event(String title, String bannerUrl, String venue, String desc, Date date){
+    public Event(String eventId, String title, String category, String bannerUrl, String venue, String desc, Date date, String organiserId,String status){
+        this.category = category;
         this.bannerUrl = bannerUrl;
         this.title = title;
+        this.eventId = eventId;
         this.venue = venue;
         this.desc = desc;
         this.date = date;
+        this.organiserId = organiserId;
+        this.status = status;
     }
 
     public Date getDate() {
@@ -57,5 +61,37 @@ public class Event {
 
     public void setDesc(String desc) {
         this.desc = desc;
+    }
+
+    public String getOrganiserId() {
+        return organiserId;
+    }
+
+    public void setOrganiserId(String organiserId) {
+        this.organiserId = organiserId;
+    }
+
+    public String getEventId() {
+        return eventId;
+    }
+
+    public void setEventId(String eventId) {
+        this.eventId = eventId;
+    }
+
+    public String getCategory() {
+        return category;
+    }
+
+    public void setCategory(String category) {
+        this.category = category;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 }

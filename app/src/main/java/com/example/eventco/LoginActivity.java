@@ -3,6 +3,7 @@ package com.example.eventco;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -27,6 +28,7 @@ public class LoginActivity extends AppCompatActivity {
     private  String password;
     private FirebaseFirestore firestore;
     private FirebaseAuth mAuth;
+    private ProgressDialog pDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,6 +37,9 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(binding.getRoot());
         mAuth = FirebaseAuth.getInstance();
         firestore = FirebaseFirestore.getInstance();
+        pDialog = new ProgressDialog(this);
+        pDialog.setCancelable(false);
+        pDialog.setMessage("Please Wait");
 
         binding.login.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -49,6 +54,7 @@ public class LoginActivity extends AppCompatActivity {
                     binding.password.setError("Please Enter Password");
                 }
                 if(!email.isEmpty() || !password.isEmpty()){
+                    pDialog.show();
                     mAuth.signInWithEmailAndPassword(email , password).addOnSuccessListener(new OnSuccessListener<AuthResult>() {
                         @Override
                         public void onSuccess(AuthResult authResult) {
@@ -61,26 +67,32 @@ public class LoginActivity extends AppCompatActivity {
                                         Intent intent;
                                         DocumentSnapshot doc = task.getResult();
                                         String userType = doc.get("userType").toString();
+                                        pDialog.dismiss();
                                         if(userType == "user"){
                                             intent = new Intent(LoginActivity.this , MainAttendeeActivity.class);
                                             startActivity(intent);
                                             finishAffinity();
+
                                         }
                                         else if(userType == "organiser"){
                                             intent = new Intent(LoginActivity.this , OrganiserMainActivity.class);
                                             startActivity(intent);
                                             finishAffinity();
+
                                         }
                                         else if(userType == "security"){
                                             intent = new Intent(LoginActivity.this , MainAttendeeActivity.class);
                                             startActivity(intent);
                                             finishAffinity();
+
                                         }
+
                                     }
                                 }
                             }).addOnFailureListener(new OnFailureListener() {
                                 @Override
                                 public void onFailure(@NonNull Exception e) {
+                                    pDialog.dismiss();
                                     Log.e("Failure",e.toString());
 
                                 }
@@ -90,6 +102,8 @@ public class LoginActivity extends AppCompatActivity {
                     }).addOnFailureListener(new OnFailureListener() {
                         @Override
                         public void onFailure(@NonNull Exception e) {
+                            pDialog.dismiss();
+                            Log.e("Failure",e.toString());
 
                         }
                     });

@@ -10,7 +10,9 @@
         <entry key="..\:/EventCo/app/src/main/res/drawable/rounded_buttons.xml" value="0.2205" />
         <entry key="..\:/EventCo/app/src/main/res/layout-w1240dp/content_scrolling.xml" value="0.223828125" />
         <entry key="..\:/EventCo/app/src/main/res/layout-w936dp/content_scrolling.xml" value="0.190625" />
+        <entry key="..\:/EventCo/app/src/main/res/layout/activity_camera.xml" value="0.228125" />
         <entry key="..\:/EventCo/app/src/main/res/layout/activity_event_detail.xml" value="0.14907407407407408" />
+        <entry key="..\:/EventCo/app/src/main/res/layout/activity_event_details.xml" value="0.234375" />
         <entry key="..\:/EventCo/app/src/main/res/layout/activity_event_info.xml" value="0.25416666666666665" />
         <entry key="..\:/EventCo/app/src/main/res/layout/activity_login.xml" value="0.25416666666666665" />
         <entry key="..\:/EventCo/app/src/main/res/layout/activity_login2.xml" value="0.2" />
@@ -19,17 +21,19 @@
         <entry key="..\:/EventCo/app/src/main/res/layout/activity_new_event.xml" value="0.264" />
         <entry key="..\:/EventCo/app/src/main/res/layout/activity_organiser_main.xml" value="0.2" />
         <entry key="..\:/EventCo/app/src/main/res/layout/activity_register.xml" value="0.2" />
-        <entry key="..\:/EventCo/app/src/main/res/layout/activity_security_main.xml" value="0.2015625" />
+        <entry key="..\:/EventCo/app/src/main/res/layout/activity_security_main.xml" value="0.176" />
         <entry key="..\:/EventCo/app/src/main/res/layout/activity_sign_up.xml" value="0.264" />
         <entry key="..\:/EventCo/app/src/main/res/layout/category_wise_rv.xml" value="0.176" />
         <entry key="..\:/EventCo/app/src/main/res/layout/content_scrolling.xml" value="0.2" />
         <entry key="..\:/EventCo/app/src/main/res/layout/edit_texts.xml" value="0.25416666666666665" />
-        <entry key="..\:/EventCo/app/src/main/res/layout/event_banner.xml" value="0.2" />
+        <entry key="..\:/EventCo/app/src/main/res/layout/event_banner.xml" value="0.176" />
         <entry key="..\:/EventCo/app/src/main/res/layout/fragment_history.xml" value="0.23020833333333332" />
         <entry key="..\:/EventCo/app/src/main/res/layout/fragment_home.xml" value="0.25416666666666665" />
         <entry key="..\:/EventCo/app/src/main/res/layout/fragment_ongoing.xml" value="0.1" />
+        <entry key="..\:/EventCo/app/src/main/res/layout/fragment_previous.xml" value="0.2359375" />
         <entry key="..\:/EventCo/app/src/main/res/layout/fragment_profile.xml" value="0.23020833333333332" />
-        <entry key="..\:/EventCo/app/src/main/res/layout/sample_ongoing_events.xml" value="0.1" />
+        <entry key="..\:/EventCo/app/src/main/res/layout/sample_folding_cell.xml" value="0.264" />
+        <entry key="..\:/EventCo/app/src/main/res/layout/sample_ongoing_events.xml" value="0.16" />
         <entry key="..\:/EventCo/app/src/main/res/menu/botttom_nav_menu.xml" value="0.25416666666666665" />
         <entry key="..\:/EventCo/app/src/main/res/menu/menu_event_info.xml" value="0.14907407407407408" />
       </map>

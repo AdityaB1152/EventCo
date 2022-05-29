@@ -20,7 +20,7 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/eventRV"
         android:layout_width="match_parent"
-        android:layout_height="215dp"
+        android:layout_height="195dp"
         android:layout_below="@id/category_name"
         android:orientation="horizontal"
         tools:listitem="@layout/event_banner" />

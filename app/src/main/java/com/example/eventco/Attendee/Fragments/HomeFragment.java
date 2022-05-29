@@ -46,12 +46,14 @@ public class HomeFragment extends Fragment {
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
         catergoryRV.setLayoutManager(layoutManager);
         catergoryRV.setAdapter(adapter);
-        Category category =  new Category("Music Concerts");
+        Category category =  new Category("Music");
         Category category1 =  new Category("Movies");
         Category category2 =  new Category("Plays");
+        Category category3 =  new Category("Comedy");
         categories.add(category);
         categories.add(category1);
         categories.add(category2);
+        categories.add(category3);
         adapter.notifyDataSetChanged();
 
         return binding.getRoot();

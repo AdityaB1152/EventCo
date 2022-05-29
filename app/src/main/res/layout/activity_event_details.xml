@@ -6,15 +6,12 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Attendee.RegisterActivity"
-    android:background="@color/bgColor">
+    tools:context=".Attendee.RegisterActivity">
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
-        android:id="@+id/coordinator1"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/bgColor"
-        android:visibility="gone">
+        android:background="@color/bgColor">
 
         <com.google.android.material.appbar.AppBarLayout
             android:id="@+id/appBarLayout"
@@ -32,12 +29,14 @@
 
 
                 <ImageView
-                    android:id="@+id/register_banner"
+                    android:id="@+id/banner"
                     android:layout_width="match_parent"
                     android:layout_height="250dp"
                     android:scaleType="centerCrop"
                     android:src="@drawable/sample"
-                    app:layout_collapseMode="parallax" />
+                    app:layout_collapseMode="parallax"
+                    android:contentDescription="TODO"
+                    tools:ignore="ContentDescription" />
 
 
                 <androidx.appcompat.widget.Toolbar
@@ -78,7 +77,8 @@
                     android:layout_height="wrap_content"
                     android:layout_below="@id/title"
                     android:layout_marginTop="10dp"
-                    android:orientation="horizontal">
+                    android:orientation="horizontal"
+                    tools:ignore="UseCompoundDrawables">
 
                     <ImageView
                         android:layout_width="15dp"
@@ -87,7 +87,7 @@
                         app:tint="@color/green" />
 
                     <TextView
-                        android:id="@+id/register_date"
+                        android:id="@+id/date"
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
                         android:layout_gravity="center"
@@ -114,7 +114,7 @@
                         app:tint="@color/green" />
 
                     <TextView
-                        android:id="@+id/register_venue"
+                        android:id="@+id/venue"
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
                         android:layout_marginLeft="10dp"
@@ -139,12 +139,30 @@
                     android:textStyle="bold" />
 
                 <TextView
-                    android:id="@+id/register_about"
+                    android:id="@+id/about"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_below="@id/text"
                     android:layout_marginTop="20dp"
                     android:textColor="@color/white" />
+
+                <TextView
+
+                    android:id="@id/text2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/about"
+                    android:layout_marginTop="10dp"
+                    android:text="Active Security Volunteers"
+                    android:textColor="@color/white"
+                    android:textSize="20dp"
+                    android:textStyle="bold" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/text2"
+                    android:layout_marginBottom="10dp" />
 
 
             </RelativeLayout>
@@ -154,99 +172,4 @@
 
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
-
-    <Button
-        android:id="@+id/book"
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:layout_alignParentBottom="true"
-        android:layout_marginLeft="40dp"
-        android:layout_marginRight="40dp"
-        android:layout_marginBottom="10dp"
-        android:background="@drawable/rounded_buttons"
-        android:text="Book Now"
-        android:visibility="gone" />
-
-    <androidx.cardview.widget.CardView
-        android:layout_width="250dp"
-        android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:layout_marginLeft="20dp"
-        android:layout_marginRight="20dp"
-        app:cardCornerRadius="550dp">
-
-        <androidx.camera.view.PreviewView
-            android:id="@+id/preview"
-            android:layout_width="match_parent"
-            android:layout_height="250dp"
-            android:layout_centerInParent="true"
-            android:visibility="visible"
-             />
-
-    </androidx.cardview.widget.CardView>
-
-
-    <Button
-        android:id="@+id/capture"
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:layout_alignParentBottom="true"
-        android:layout_marginLeft="40dp"
-        android:layout_marginRight="40dp"
-        android:layout_marginBottom="10dp"
-        android:background="@drawable/rounded_buttons"
-        android:text="Verify Face"
-        android:visibility="visible" />
-
-    <ImageView
-        android:id="@+id/backButton"
-        android:layout_width="30dp"
-        android:layout_height="30dp"
-        android:layout_marginLeft="10dp"
-        android:layout_marginTop="10dp"
-        android:src="@drawable/back"
-        app:tint="@color/green"
-        android:visibility="visible"/>
-
-    <com.airbnb.lottie.LottieAnimationView
-        android:layout_width="wrap_content"
-        android:layout_height="300dp"
-        app:lottie_fileName="verified.json"
-        app:lottie_autoPlay="true"
-        app:lottie_loop="true"
-        android:layout_centerInParent="true"
-        android:id="@+id/verified_animation"
-        android:visibility="gone"
-        />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/verified_animation"
-        android:layout_centerHorizontal="true"
-        android:foregroundGravity="center"
-        android:gravity="center"
-        android:text="VERIFIED!!"
-        android:textColor="@color/green"
-        android:textSize="34dp"
-        android:textStyle="bold"
-        android:visibility="gone"
-        android:fontFamily="@font/averia_gruesa_libre"
-        android:id="@+id/textV"/>
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/textV"
-        android:layout_centerHorizontal="true"
-        android:foregroundGravity="center"
-        android:gravity="center"
-        android:id="@+id/seeU"
-        android:visibility="gone"
-        android:text="See You at the Venue"
-        android:textColor="@color/green"
-        android:textSize="34dp"
-        android:textStyle="bold"
-        android:fontFamily="@font/averia_gruesa_libre"/>
-
-
 </RelativeLayout>

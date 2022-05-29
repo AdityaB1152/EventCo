@@ -49,8 +49,8 @@
                 android:gravity="center"
                 android:text="Welcome back! Login to continue"
                 android:textColor="@color/black"
-                android:textStyle="bold"
-                android:textSize="16dp" />
+                android:textSize="16dp"
+                android:textStyle="bold" />
 
 
             <EditText

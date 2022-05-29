@@ -1,13 +1,4 @@
-package com.example.eventco.Attendee;
-
-import android.app.ProgressDialog;
-import android.content.Intent;
-import android.net.Uri;
-import android.os.Bundle;
-import android.view.TextureView;
-import android.view.View;
-import android.widget.ProgressBar;
-import android.widget.Toast;
+package com.example.eventco.Security;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -20,14 +11,28 @@ import androidx.camera.view.PreviewView;
 import androidx.core.content.ContextCompat;
 import androidx.lifecycle.LifecycleOwner;
 
-import com.bumptech.glide.Glide;
+import android.app.ProgressDialog;
+import android.content.Intent;
+import android.net.Uri;
+import android.os.Bundle;
+import android.util.Log;
+import android.view.TextureView;
+import android.view.View;
+import android.widget.Toast;
+
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
+import com.example.eventco.Attendee.RegisterActivity;
 import com.example.eventco.FaceApi;
-import com.example.eventco.databinding.ActivityRegisterBinding;
+import com.example.eventco.databinding.ActivityCameraBinding;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
-import com.google.android.material.appbar.CollapsingToolbarLayout;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -35,16 +40,16 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.File;
 import java.io.IOException;
-import java.net.URI;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executor;
 
-public class RegisterActivity extends AppCompatActivity {
-
-    ActivityRegisterBinding binding;
-    CollapsingToolbarLayout layout;
+public class CameraActivity extends AppCompatActivity {
+    ActivityCameraBinding binding;
     PreviewView previewView;
     FirebaseFirestore firestore;
     FirebaseAuth auth;
@@ -52,27 +57,20 @@ public class RegisterActivity extends AppCompatActivity {
     ListenableFuture<ProcessCameraProvider> cameraProviderFuture;
     ImageCapture imageCapture;
     ProgressDialog progressDialog;
-    String eventId = getIntent().getStringExtra("eventId");
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        String eventId = getIntent().getStringExtra("eventId");
+        binding = ActivityCameraBinding.inflate(getLayoutInflater());
         super.onCreate(savedInstanceState);
-        binding = ActivityRegisterBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
-
-        Intent intent = getIntent();
-        layout = binding.coordinator;
+        previewView = binding.preview;
         auth = FirebaseAuth.getInstance();
         progressDialog = new ProgressDialog(this);
         progressDialog.setCancelable(false);
         progressDialog.setMessage("Please Wait!");
-        layout.setTitle(intent.getStringExtra("title"));
+
         firestore = FirebaseFirestore.getInstance();
-        binding.title.setText(intent.getStringExtra("title"));
-        String downloadUrl = intent.getStringExtra("bannerUrl");
-        Glide.with(RegisterActivity.this).load(downloadUrl).into(binding.registerBanner);
-        binding.registerAbout.setText(intent.getStringExtra("desc"));
-        previewView = binding.preview;
 
         cameraProviderFuture = ProcessCameraProvider.getInstance(this);
         cameraProviderFuture.addListener(()->{
@@ -86,13 +84,14 @@ public class RegisterActivity extends AppCompatActivity {
             }
         },getExecutor());
 
-        binding.book.setOnClickListener(new View.OnClickListener() {
+
+        binding.back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                binding.coordinator1.setVisibility(View.GONE);
-                binding.book.setVisibility(View.GONE);
-                binding.preview.setVisibility(View.VISIBLE);
-                binding.capture.setVisibility(View.VISIBLE);
+                Intent intent = new Intent(CameraActivity.this , CameraActivity.class);
+                intent.putExtra("eventId",eventId);
+                startActivity(intent);
+                finish();
             }
         });
 
@@ -101,7 +100,7 @@ public class RegisterActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 try {
-                    capture();
+                    capture(eventId);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -109,8 +108,8 @@ public class RegisterActivity extends AppCompatActivity {
         });
 
 
-    }
 
+    }
     private Executor getExecutor() {
         return ContextCompat.getMainExecutor(this);
     }
@@ -130,10 +129,10 @@ public class RegisterActivity extends AppCompatActivity {
         cameraProvider.bindToLifecycle((LifecycleOwner) this,selector,preview,imageCapture);
     }
 
-    public void capture() throws IOException {
+    public void capture(String eventId) throws IOException {
         binding.preview.setVisibility(View.GONE);
         binding.capture.setVisibility(View.GONE);
-        progressDialog.show();
+
         File outputDir = this.getCacheDir();
         File outputFile = File.createTempFile("temp",".jpeg",outputDir);
         imageCapture.takePicture(
@@ -142,12 +141,10 @@ public class RegisterActivity extends AppCompatActivity {
                 new ImageCapture.OnImageSavedCallback() {
                     @Override
                     public void onImageSaved(@NonNull ImageCapture.OutputFileResults outputFileResults) {
-                        progressDialog.dismiss();
-                        binding.verifiedAnimation.setVisibility(View.VISIBLE);
-                        binding.textV.setVisibility(View.VISIBLE);
-                            Uri uri = Uri.fromFile(outputFile);
+                        progressDialog.show();
+                        Uri uri = Uri.fromFile(outputFile);
                         StorageReference reference = FirebaseStorage.getInstance().getReference("Faces/"+eventId+"/"+ auth.getUid());
-                                                reference.putFile(uri)
+                        reference.putFile(uri)
                                 .addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
 
                                     @Override
@@ -159,9 +156,45 @@ public class RegisterActivity extends AppCompatActivity {
                                                 @Override
                                                 public void onSuccess(Uri uri) {
                                                     String url = uri.toString();
-                                                    FaceApi api =new FaceApi();
-                                                    api.addPerson(RegisterActivity.this,auth.getUid(),eventId
-                                                            ,auth.getUid(),url);
+                                                    RequestQueue queue = Volley.newRequestQueue(CameraActivity.this);
+                                                    JSONObject object = new JSONObject();
+
+                                                    try {
+                                                        object.put("downloadUrl",url);
+                                                        object.put("eventId","test1152");
+                                                    } catch (JSONException e) {
+                                                        e.printStackTrace();
+                                                    }
+                                                    Log.e("Calling API","NOW");
+                                                    JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST,
+                                                            "https://facefunctions.azurewebsites.net/api/FaceIdentification?code=XdqLx648miZd-MFRkl-T2kdylUn26BA5Q6H43YRIB3GBAzFuV37Nbg==",
+                                                            object, new Response.Listener<JSONObject>() {
+                                                        @Override
+                                                        public void onResponse(JSONObject response) {
+                                                            Log.e("CHECK",response.toString());
+                                                            try {
+                                                                if(response.getBoolean("verify")){
+                                                                    progressDialog.dismiss();
+                                                                    binding.verifiedAnimation.setVisibility(View.VISIBLE);
+                                                                    binding.textV.setVisibility(View.VISIBLE);
+                                                                }
+                                                                else{
+
+                                                                }
+
+                                                            } catch (JSONException e) {
+                                                                e.printStackTrace();
+                                                            }
+                                                        }
+                                                    }, new Response.ErrorListener() {
+                                                        @Override
+                                                        public void onErrorResponse(VolleyError error) {
+                                                            Log.e("Error",error.toString());
+                                                        }
+                                                    });
+
+                                                    queue.add(request);
+
                                                 }
                                             });
                                         }
@@ -169,7 +202,7 @@ public class RegisterActivity extends AppCompatActivity {
                                 }).addOnFailureListener(new OnFailureListener() {
                             @Override
                             public void onFailure(@NonNull Exception e) {
-                                Toast.makeText(RegisterActivity.this, e.toString(), Toast.LENGTH_SHORT).show();
+                                Toast.makeText(CameraActivity.this, e.toString(), Toast.LENGTH_SHORT).show();
                             }
                         });
 

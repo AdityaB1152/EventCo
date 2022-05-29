@@ -1,16 +1,16 @@
 package com.example.eventco;
 
 public class User {
-    private String name;
+    private String name,uid;
 
     public User() {
 
     }
-    public User(String name , String email , String role) {
+    public User(String name , String email , String role, String uid) {
     this.name = name;
     this.email = email;
     this.role = role;
-
+        this.uid = uid;
     }
 
     private String email;
@@ -38,5 +38,13 @@ public class User {
 
     public void setRole(String role) {
         this.role = role;
+    }
+
+    public String getUid() {
+        return uid;
+    }
+
+    public void setUid(String uid) {
+        this.uid = uid;
     }
 }

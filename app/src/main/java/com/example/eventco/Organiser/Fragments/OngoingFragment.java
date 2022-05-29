@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -21,9 +22,13 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
@@ -38,6 +43,7 @@ public class OngoingFragment extends Fragment {
      FloatingActionButton createEventButton;
     ArrayList<Event> events;
      EventDetailsAdapter adapter;
+     FirebaseAuth auth;
 
     public OngoingFragment() {
         // Required empty public constructor
@@ -54,6 +60,7 @@ public class OngoingFragment extends Fragment {
                              Bundle savedInstanceState) {
         binding = FragmentOngoingBinding.inflate(inflater , container ,false);
         ongoingEventsRV = binding.ongoingRv;
+        auth = FirebaseAuth.getInstance();
         createEventButton = binding.createEventButton;
         events = new ArrayList<>();
         adapter = new EventDetailsAdapter(getActivity() , events);
@@ -62,7 +69,8 @@ public class OngoingFragment extends Fragment {
         firestore = FirebaseFirestore.getInstance();
 
         CollectionReference eventsRef = firestore.collection("Events");
-        eventsRef.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+        Query query = eventsRef.whereEqualTo("status","ongoing");
+        query.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 if(task.isSuccessful()){
@@ -77,7 +85,28 @@ public class OngoingFragment extends Fragment {
             }
         });
 
+        eventsRef.addSnapshotListener(new EventListener<QuerySnapshot>() {
+            @Override
+            public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
+                events.clear();
+                query.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if(task.isSuccessful()){
+                            for(QueryDocumentSnapshot documentSnapshot : task.getResult()){
+                                Event event = documentSnapshot.toObject(Event.class);
+                                Snackbar.make(getView(),event.getTitle(),Snackbar.LENGTH_LONG).show();
+                                events.add(event);
+                                Log.e("CHECK",event.toString());
+                            }
+                            adapter.notifyDataSetChanged();
+                        }
+                    }
+                });
 
+                adapter.notifyDataSetChanged();
+            }
+        });
 
 
 

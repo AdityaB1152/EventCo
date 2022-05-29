@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -17,7 +18,10 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
@@ -57,7 +61,8 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryViewHolder> {
         holder.binding.categoryName.setText(category.getCategory());
         firestore = FirebaseFirestore.getInstance();
         CollectionReference ref = firestore.collection("Events");
-                ref.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+        Query query = ref.whereEqualTo("category",category.getCategory());
+                query.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
                         for(QueryDocumentSnapshot doc : task.getResult()){
@@ -67,7 +72,6 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryViewHolder> {
                         adapter.notifyDataSetChanged();
                     }
                 });
-
 
     }
 

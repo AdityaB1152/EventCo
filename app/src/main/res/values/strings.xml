@@ -3,6 +3,8 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="title_activity_event_info">EventInfoActivity</string>
+    <string name="endpoint">https://event-co.cognitiveservices.azure.com/</string>
+    <string name="subscriptionKey">40ac89417add49e7ae5be7eaafe81e3f</string>
     <string name="large_text">
         "Material is the metaphor.\n\n"
 
